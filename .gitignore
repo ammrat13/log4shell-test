@@ -1,0 +1,5 @@
+# Ignore any folders labeled build/
+build/
+
+# Ignore Gradle metadata
+.gradle/
