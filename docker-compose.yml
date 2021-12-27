@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+  # The attacker hosts a server which the victim can use to look up the location
+  # of the code to execute. Specifically, the directory server must contain a
+  # `Reference` to a factory class, which will then be executed to construct an
+  # object.
+  #
+  # Many frameworks can be used for this, including RMI and CORBA. We just use
+  # an LDAP server.
+  attacker_ldap_registry:
+    image: "bitnami/openldap:2.5"
+    environment:
+    - LDAP_PORT_NUMBER=1389
+    - LDAP_ROOT=dc=ldap-registry,dc=attacker
+    - LDAP_ADMIN_USERNAME=admin
+    - LDAP_ADMIN_PASSWORD=admin
+    - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,java,corba
+    - LDAP_ALLOW_ANON_BINDING=yes
+    ports:
+    - "1389:1389"
+
+  # The attacker must host a server from which the victim can download a class
+  # to execute. In Java parlance, this is called a "codebase".
+  #
+  # For our purposes, we just spool up an HTTP server.
+  attacker_codebase:
+    image: "httpd:alpine"
+    volumes:
+    - "${PWD}/attacker_codebase_files/:/usr/local/apache2/htdocs/"
+    ports:
+    - ":80"
