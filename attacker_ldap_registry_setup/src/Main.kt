@@ -54,6 +54,7 @@ fun main() {
     //  until we're able to connect. That's all the helper function does. Aside
     //  from the looping, it just does `InitialContext(env)`.
     var ctx: Context = getContext(env)
+    println("Connected!")
 
     // Add the reference to the registry
     ctx.bind(
@@ -71,7 +72,9 @@ fun getContext(env: Hashtable<String,String>): Context {
         try {
             InitialContext(env)
         } catch(_: CommunicationException) {
-            continue
+            println("Failed to connect.")
+            println("Retrying after 1 second...")
+            Thread.sleep(1000)
         }
     }
 }
