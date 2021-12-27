@@ -15,6 +15,9 @@ services:
     - LDAP_ROOT=dc=ldap-registry,dc=attacker
     - LDAP_ADMIN_USERNAME=admin
     - LDAP_ADMIN_PASSWORD=admin
+    - LDAP_USERS=nobody
+    - LDAP_PASSWORDS=nobody
+    - LDAP_GROUP=users
     - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,java,corba
     - LDAP_ALLOW_ANON_BINDING=yes
     ports:
