@@ -5,7 +5,8 @@
 # process will build and install the application, and the default command will
 # be to run it.
 
-FROM openjdk:8u312
+# Downgrade so LDAP exploitation still works
+FROM openjdk:8u181
 
 # Name of the application to build
 # Used for locating the install files

