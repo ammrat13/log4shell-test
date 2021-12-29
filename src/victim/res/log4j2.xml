@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Configuration file for Log4J2
+    It directs all logs to the console at a level of TRACE. Internal Log4J
+    messages are printed at the WARN level though.
+ -->
+
+<Configuration status="WARN">
+
+    <!-- Define an appender to the Console -->
+    <!-- Mostly use the default pattern, but get rid of the thread -->
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <!-- Define the root logger at level TRACE -->
+    <!-- Print all output to the console -->
+    <Loggers>
+        <Root level="TRACE">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

