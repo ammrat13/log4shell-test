@@ -46,6 +46,6 @@ services:
   attacker_codebase:
     build:
       context:    ${PWD}/src/attacker_codebase
-      dockerfile: ${PWD}/docker/gradle-codebase.Dockerfile
+      dockerfile: ${PWD}/docker/gradle-java-codebase.Dockerfile
     ports:
     - "8080:80"

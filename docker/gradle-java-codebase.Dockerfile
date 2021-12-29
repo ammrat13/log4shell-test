@@ -3,6 +3,8 @@
 # This script will host a particular Gradle build's classes over HTTP. The root
 # directory of the Gradle project is expected to be the build context, and the
 # build process will build the application and copy over the class files.
+#
+# This Dockerfile only works for Java codebases.
 
 
 # Don't need an old JDK version here
@@ -21,4 +23,6 @@ RUN [ "./gradlew", "classes" ]
 FROM httpd:alpine
 
 # Copy the classes
-COPY --from=0 /usr/local/src/build/classes/kotlin/main/ /usr/local/apache2/htdocs/
+COPY --from=0 \
+    /usr/local/src/build/classes/java/main/ \
+    /usr/local/apache2/htdocs/

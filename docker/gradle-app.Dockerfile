@@ -27,8 +27,12 @@ ARG APP_NAME
 
 # Install
 # The run script is renamed `app`
-COPY --from=0 /usr/local/src/build/install/${APP_NAME}/bin/${APP_NAME} /usr/local/bin/app
-COPY --from=0 /usr/local/src/build/install/${APP_NAME}/lib/            /usr/local/lib/
+COPY --from=0 \
+    /usr/local/src/build/install/${APP_NAME}/bin/${APP_NAME} \
+    /usr/local/bin/app
+COPY --from=0 \
+    /usr/local/src/build/install/${APP_NAME}/lib/ \
+    /usr/local/lib/
 
 # Default command is to run the application with no arguments
 CMD [ "/usr/local/bin/app" ]

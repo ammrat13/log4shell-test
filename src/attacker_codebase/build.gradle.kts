@@ -1,6 +1,8 @@
-// Build a Kotlin library
+// Build a Java library
+// It has to be Java. Kotlin requires a runtime, and I don't want to have to
+//  serve that too.
 plugins {
-    kotlin("jvm") version "1.6.10"
+    java
 }
 
 // Use Maven Central as our repository
@@ -14,5 +16,5 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 // We set both Java and Kotlin to the same thing. We only use Kotlin so it
 //  should be fine.
 sourceSets.main {
-    java.srcDirs("src/", "src/")
+    java.srcDirs("src/")
 }

