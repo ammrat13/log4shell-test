@@ -9,7 +9,7 @@
 
 # Don't need an old JDK version here
 # Just use it for consistency
-FROM openjdk:8u181
+FROM openjdk:8u171-alpine
 
 # Copy the source tree into the container
 WORKDIR /usr/local/src/
