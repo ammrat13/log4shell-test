@@ -1,3 +1,18 @@
+// Initialize the LDAP registry with a `Reference`
+//
+// The victim will query the LDAP registry for a class. We want to return a
+// `Reference` to an object. It will have the class of the object, as well as a
+// factory to use to make it. This factory class will then be downloaded an
+// attacker-controlled URL and executed on the victim.
+//
+// This Kotlin program just initializes the LDAP registry with this reference.
+// This would more practically be done with an LDIF file, but this can work too.
+// It puts at the path `cn=made-class,dc=ldap-registry,dc=attacker` a
+// `Reference` to an object of type `MadeClass`. It specifies that the class
+// `FactoryClass` should be used to construct it, and that the `.class` files
+// for both of these classes can be found at a particular URL.
+
+
 import java.util.Hashtable
 
 import javax.naming.Context

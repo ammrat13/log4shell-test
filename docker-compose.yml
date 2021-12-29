@@ -2,9 +2,9 @@ version: "3"
 services:
 
   # The attacker hosts a server which the victim can use to look up the location
-  # of the code to execute. Specifically, the directory server must contain a
-  # `Reference` to a factory class, which will then be executed to construct an
-  # object.
+  # of the code to execute. Specifically, the directory server will contain a
+  # `Reference` containing a factory class to use to construct an object. This
+  # factory class is executed on the victim, giving RCE.
   #
   # Many frameworks can be used for this, including RMI and CORBA. We just use
   # an LDAP server.
@@ -39,11 +39,13 @@ services:
     depends_on:
       - attacker_ldap_registry
 
-  # The attacker must host a server from which the victim can download a class
-  # to execute. In Java parlance, this is called a "codebase".
-  #
-  # For our purposes, we just spool up an HTTP server.
+  # The victim needs to know the classes of the objects the attacker feeds it.
+  # In Java parlance, the victim needs to know the "codebase" of the attacker.
+  # We set that up here. This HTTP server will host the `.class` files needed by
+  # the victim for remote code execution.
   attacker_codebase:
-    image: "httpd:alpine"
+    build:
+      context:    ${PWD}/src/attacker_codebase
+      dockerfile: ${PWD}/docker/gradle-codebase.Dockerfile
     ports:
-    - ":80"
+    - "8080:80"
