@@ -21,7 +21,7 @@ services:
       LDAP_EXTRA_SCHEMAS: "cosine,inetorgperson,nis,java,corba"
       LDAP_ALLOW_ANON_BINDING: "yes"
     ports:
-    - "1389:1389"
+    - ":1389"
 
   # The LDAP registry must be initialized with data. The `Reference` must be
   # placed into the directory. This could easily be done with an LDIF file on
@@ -35,7 +35,7 @@ services:
     environment:
       JAVA_OPTS: >-
         -Dattacker-ldap-registry-url=ldap://attacker_ldap_registry:1389/dc=ldap-registry,dc=attacker
-        -Dattacker-codebase-url=http://attacker_codebase:8080/
+        -Dattacker-codebase-url=http://attacker_codebase:80/
     depends_on:
       - attacker_ldap_registry
 
@@ -48,4 +48,4 @@ services:
       context:    ${PWD}/src/attacker_codebase
       dockerfile: ${PWD}/docker/gradle-java-codebase.Dockerfile
     ports:
-    - "8080:80"
+    - ":80"
