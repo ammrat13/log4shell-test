@@ -93,3 +93,16 @@ where the RCE happens first. That's the method this code uses.
   * [`Reference`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Reference.html)
   * [`Context`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html)
   * [`ObjectFactory`](https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/ObjectFactory.html)
+
+
+## Limitations
+
+Obviously, this repository uses an out-of-date version of Log4J - version
+`2.14.0` specifically. It also uses an out-of-date version of Java due to the
+type of exploit it uses. Instead of using gadgets already in the `CLASSPATH`, it
+requires the victim to download `.class` files from a remote codebase. This
+capability was made disabled by default through the
+`com.sun.jndi.ldap.object.trustURLCodebase` property just after version `8u171`.
+
+Additionally, it doesn't add any instrumentation to Log4J itself. It treats the
+library as a black box that allows arbitrary JNDI queries.
