@@ -75,9 +75,11 @@ store a serialized object in an LDAP server. Another way is to create a
 object, including the factory class to use to create them. The factory class is
 where the RCE happens first. That's the method this code uses.
 
-### Exploit Overview Resources
-* [LiveOverflow's Overview](https://www.youtube.com/watch?v=w2F67LbEtnk)
-* [LiveOverflow's Internal Explanation](https://www.youtube.com/watch?v=iI9Dz3zN4d8)
+### Overview Resources
+* [LiveOverflow](https://www.youtube.com/channel/UClcE-kVhqyiHCcjYwcpfj9w):
+  * [Overview](https://www.youtube.com/watch?v=w2F67LbEtnk)
+  * [Internals](https://www.youtube.com/watch?v=iI9Dz3zN4d8)
+* [*A Journey From JNDI/LDAP Manipulation to Remote Code Execution Dream Land*](https://www.youtube.com/watch?v=Y8a5nB-vy78)
 * [Flow Diagram](https://www.radware.com/security/threat-advisories-and-attack-reports/log4shell-critical-log4j-vulnerability/)
 * [Impact](https://www.lunasec.io/docs/blog/log4j-zero-day/)
 
