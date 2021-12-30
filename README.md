@@ -1,7 +1,9 @@
 # Log4Shell Test
 
 This repository serves as my testbed for the Log4Shell exploit. It hosts the
-code I played around with to understand how it works.
+code I played around with to understand how it works. Kotlin was used whenever
+possible, but raw Java was used for the remote code since using Kotlin would've
+necessitated serving it's whole runtime library.
 
 
 ## Usage
@@ -32,3 +34,60 @@ log4shell-test-victim-1                        | RCE Acheived in MadeClass::toSt
 log4shell-test-victim-1                        | Function rceMain called!
 log4shell-test-victim-1                        | 16:41:22.343 TRACE MainKt - Attempted injection: MadeClass
 ```
+
+
+## Exploit Resources
+
+Many other authors have covered how this exploit works far better than I ever
+could. As such, I'll only give a very brief summary here and link to other
+resources I found useful.
+
+For a variety of reasons I don't fully understand, it would be nice to delay
+specifying exactly how an application is set up as much as possible. For
+example, it would be nice to not have to code to a particular implementation of
+a database and have that baked into a service's `.class` files. Instead, it
+would be better to specify that we need a `"Account Database"` and have that
+service discoverable at runtime.
+
+The Java Platform allows for this flexibility. It allows code to lookup,
+download, and execute remote objects (not `class`es, objects). This way, one
+service doesn't need to have it's binaries coupled with another. They can still
+communicate with each other as long as they share an `interface`.
+
+There are many ways to acheive this remote-lookup functionality. Java provides a
+method to store serialized or factory-generated objects in LDAP directories. It
+also provides a framework to invoke remote methods, and that can be made to do
+the same thing.
+
+All these different providers of this remote-lookup service are abstracted away
+by the Java Naming and Directory Interface (JNDI) framework. JNDI provides
+interfaces to LDAP, RMI, CORBA, and other lookup services.
+
+Of course, the whole point of this framework is to download remote objects so
+the application can do stuff with them, and this can lead to problems. Say some
+attacker could control the target of a JNDI lookup. Then, they could inject
+their own class into the application. Presumably, it would then have methods
+called on it, leading to Remote Code Execution (RCE).
+
+There are many ways to actually acheive RCE with this vector. One way is to
+store a serialized object in an LDAP server. Another way is to create a
+`Reference` to an object. `Reference` objects hold information about another
+object, including the factory class to use to create them. The factory class is
+where the RCE happens first. That's the method this code uses.
+
+### Exploit Overview Resources
+* [LiveOverflow's Overview](https://www.youtube.com/watch?v=w2F67LbEtnk)
+* [LiveOverflow's Internal Explanation](https://www.youtube.com/watch?v=iI9Dz3zN4d8)
+* [Flow Diagram](https://www.radware.com/security/threat-advisories-and-attack-reports/log4shell-critical-log4j-vulnerability/)
+* [Impact](https://www.lunasec.io/docs/blog/log4j-zero-day/)
+
+### JNDI Resources
+* [Tutorial](https://docs.oracle.com/javase/jndi/tutorial/):
+    * [Tutorial: How Java Objects are Stored](https://docs.oracle.com/javase/jndi/tutorial/objects/index.html)
+* [Technotes](https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/):
+  * [LDAP](https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/jndi-ldap.html)
+  * [RMI](https://docs.oracle.com/javase/7/docs/technotes/guides/jndi/jndi-rmi.html)
+* [Java Documentation](https://docs.oracle.com/javase/8/docs/api/):
+  * [`Reference`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Reference.html)
+  * [`Context`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html)
+  * [`ObjectFactory`](https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/ObjectFactory.html)
