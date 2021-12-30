@@ -3,7 +3,7 @@
 This repository serves as my testbed for the Log4Shell exploit. It hosts the
 code I played around with to understand how it works. Kotlin was used whenever
 possible, but raw Java was used for the remote code since using Kotlin would've
-necessitated serving it's whole runtime library.
+necessitated serving its whole runtime library.
 
 
 ## Usage
@@ -51,7 +51,7 @@ service discoverable at runtime.
 
 The Java Platform allows for this flexibility. It allows code to lookup,
 download, and execute remote objects (not `class`es, objects). This way, one
-service doesn't need to have it's binaries coupled with another. They can still
+service doesn't need to have its binaries coupled with another. They can still
 communicate with each other as long as they share an `interface`.
 
 There are many ways to acheive this remote-lookup functionality. Java provides a
