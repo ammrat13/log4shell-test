@@ -90,9 +90,10 @@ where the RCE happens first. That's the method this code uses.
   * [LDAP](https://docs.oracle.com/javase/8/docs/technotes/guides/jndi/jndi-ldap.html)
   * [RMI](https://docs.oracle.com/javase/7/docs/technotes/guides/jndi/jndi-rmi.html)
 * [Java Documentation](https://docs.oracle.com/javase/8/docs/api/):
+  * [`DirContext`](https://docs.oracle.com/javase/8/docs/api/javax/naming/directory/DirContext.html)
   * [`Reference`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Reference.html)
-  * [`Context`](https://docs.oracle.com/javase/8/docs/api/javax/naming/Context.html)
   * [`ObjectFactory`](https://docs.oracle.com/javase/8/docs/api/javax/naming/spi/ObjectFactory.html)
+* [RFC 2713](https://datatracker.ietf.org/doc/html/rfc2713)
 
 
 ## Limitations
